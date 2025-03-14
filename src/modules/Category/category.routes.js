@@ -11,7 +11,7 @@ router.get("/AllCategory", getAllCategory)
 
 // params routes 
 router.get('/:id', getCategoryById);
-router.put('/:id', updateCategory);
+router.put('/:id', validateSchema(categorySchemaValidation),updateCategory);
 router.delete('/:id', deleteCategory);
 
 

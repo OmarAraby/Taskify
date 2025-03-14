@@ -4,6 +4,7 @@ require('dotenv').config();
 const connectionDB = require('./db/connectionDB');
 const { globalErrorHandler } = require('./src/middlewares/errorHandler.middleware');
 const categoryRoutes = require('./src/modules/Category/category.routes');
+const authRoutes = require('./src/modules/User/user.routes');
 
 const PORT=process.env.PORT||9999;
 const app = express();
@@ -19,7 +20,7 @@ app.use(express.json());
 
 // routes
 app.use('/category', categoryRoutes);  // remove the comment
-
+app.use('/auth',authRoutes)
 
 
 
