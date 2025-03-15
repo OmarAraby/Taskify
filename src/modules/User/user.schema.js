@@ -57,9 +57,51 @@ const loginSchemaValidation = joi.object({
         })
 });
 
+// update profile schema
+const updateProfileSchemaValidation = userSchemaValidation.fork(
+    ['username', 'email'], // Only include these fields
+    (schema) => schema.optional() // Make them optional
+).fork(
+    ['password', 'role'], 
+    (schema) => schema.forbidden() // Mark them as forbidden
+);
+
+// forget the password schema
+const forgetPassValidationSchema = joi.object({
+    email: userSchemaValidation.extract('email'),
+})
+
+// reset the password schema
+const resetPassValidationSchema = joi.object({
+    password: userSchemaValidation.extract('password'), 
+    confirmPassword: joi.string()
+        .valid(joi.ref('password')) // Ensure confirmPassword matches password
+        .required()
+        .messages({
+            'any.only': 'Password does not match',
+            'any.required': 'Confirm password is required'
+        })
+});
+
+const changePasswordSchema = joi.object({
+    currentPassword: joi.string().required(),
+    newPassword: userSchemaValidation.extract('password'),
+    confirmNewPassword: joi.string()
+        .valid(joi.ref('newPassword'))
+        .required()
+        .messages({
+            'any.only': 'Passwords do not match',
+            'any.required': 'Please confirm your new password'
+        })
+});
+
+
 module.exports = {
      userSchemaValidation ,
-     loginSchemaValidation
-
+     loginSchemaValidation,
+     updateProfileSchemaValidation,
+     forgetPassValidationSchema,
+     resetPassValidationSchema,
+     changePasswordSchema
 };
 
