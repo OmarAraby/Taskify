@@ -25,8 +25,48 @@ const register = asyncHandler(async(req,res,next) => {
 })
 
 
+// login user
+
+const login = asyncHandler(async(req,res,next) => {
+    const {email, password} = req.body;
+    const user = await User.findOne({email}).select('+password');  // select password field
+
+    if(!user){
+        throw new APIError('Email Or Password are invalid',401)
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if(!isMatch){
+        throw new APIError('Email Or Password are invalid',401)
+    }
+
+    const tokenPayload={
+        username: user.username,
+        email: user.email,
+        id: user._id,
+        role:user.role,
+        loggedAt:new Date().toISOString()
+    }
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
+
+    res.json({
+        success: true,
+        message: 'User logged in successfully',
+        token,
+        user: {
+            // id: user._id,
+            username: user.username,
+            email: user.email,
+        }
+    })
+})
+
+
 
 
 module.exports = {
     register,
-}
+    login
+}   
