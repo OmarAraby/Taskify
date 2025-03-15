@@ -14,7 +14,7 @@ const asyncHandler =(api)=>{
             }
 
             // handle unknown error
-          const error = new APIError(err.message||'Internal server error',err.statusCode||500);
+          const error = new APIError(err.message||'Internal server errrrror',err.statusCode||500);
           return res.status(error.statusCode).json(error.toJson());
         }
             
@@ -22,7 +22,7 @@ const asyncHandler =(api)=>{
 }
 
 ////// global error handler
-const globalErrorHandler= (req,res,next)=>{
+const globalErrorHandler= (err,req,res,next)=>{
     console.error(`Error: ${err.message}`) // debugging
 
     if(err instanceof APIError){
@@ -34,7 +34,7 @@ const globalErrorHandler= (req,res,next)=>{
 
     return res.status(500).json({
         success: false,
-        message: err.message || "Internal Server Error",
+        message: err.message || "Internal Sssssserver Error",
         error: {
             statusCode: err.statusCode || 500,
             timestamp: new Date().toISOString()

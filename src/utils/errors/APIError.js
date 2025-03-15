@@ -1,5 +1,4 @@
 // to handle api errors
-
 class APIError extends Error{
     constructor(message, statusCode) {
         super(message);
@@ -19,3 +18,6 @@ class APIError extends Error{
         };
     }
 }
+
+
+module.exports = APIError;
