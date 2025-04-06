@@ -8,7 +8,8 @@ const {
     updateUser, 
     forgotPassword,
     resetPassword,
-    changePassword
+    changePassword,
+    deleteProfileImage
 } = require('./user.controller');
 
 const {
@@ -17,7 +18,8 @@ const {
     updateProfileSchemaValidation, 
     forgetPassValidationSchema,
     resetPassValidationSchema,
-    changePasswordSchema
+    changePasswordSchema,
+    
 } = require('./user.schema');
 
 router.post('/register', validateSchema(userSchemaValidation), register);
@@ -26,6 +28,7 @@ router.get('/users', getAllUsers);
 router.put('/update-profile', protectionMW, validateSchema(updateProfileSchemaValidation), updateUser);
 router.post('/forgot-password', validateSchema(forgetPassValidationSchema), forgotPassword);
 router.patch('/change-password', protectionMW, validateSchema(changePasswordSchema), changePassword);
+router.delete('/profile-image', protectionMW, deleteProfileImage)
 router.post('/reset-password/:resetToken', validateSchema(resetPassValidationSchema), resetPassword);
 
 module.exports = router;

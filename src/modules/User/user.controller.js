@@ -6,6 +6,7 @@ const {asyncHandler} = require('../../middlewares/errorHandler.middleware');
 const crypto = require('crypto');
 // Update imports at the top
 const { sendWelcomeEmail, sendPasswordResetEmail } = require('../../services/email.service');
+const cloudinary = require('../../services/cloudinary.service');
 
 
 
@@ -71,21 +72,45 @@ const login = asyncHandler(async(req,res,next) => {
 
 
 // update user
-const updateUser = asyncHandler(async(req,res,next) => {
-    const userId = req.user.id;
-    const updatedData = {...req.body};
-    // Find and update user
-    const user = await User.findByIdAndUpdate( userId,  updatedData, {new: true} );
+const updateUser = asyncHandler(async(req, res, next) => {
+    try {
+        const updateData = { ...req.body };
+        
+        // Check if files were uploaded
+        if (req.files && req.files.length > 0) {
+            const imageFile = req.files.find(file => file.fieldname === 'profileImage');
+            if (imageFile) {
+                // Upload to cloudinary
+                const result = await cloudinary.uploader.upload(imageFile.path, {
+                    folder: 'Taskify/users',
+                    width: 300,
+                    crop: "scale"
+                });
+                
+                // Add cloudinary URL to update data
+                updateData.profileImage = result.secure_url;
+            }
+        }
 
-    if (!user) {
-        throw new APIError('User not found', 404);
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id, 
+            updateData,
+            { new: true }
+        );
+        
+        if (!updatedUser) {
+            return next(new APIError("User not found", 404));
+        }
+
+        res.json({
+            success: true,
+            message: "Profile updated successfully",
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error('Update error:', error);
+        next(new APIError(error.message, 500));
     }
-
-    res.json({
-        success: true,
-        message: 'Profile updated successfully',
-        user: user
-    });
 });
 
 // get all users
@@ -200,6 +225,37 @@ const changePassword = asyncHandler(async (req, res, next) => {
 });
 
 
+// delete profile image
+const deleteProfileImage = asyncHandler(async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+        
+        if (!user.profileImage) {
+            throw new APIError("No profile image to delete", 400);
+        }
+
+        // Extract public_id from Cloudinary URL
+        const publicId = user.profileImage.split('/').slice(-2).join('/').split('.')[0];
+        
+        // Delete from Cloudinary
+        await cloudinary.uploader.destroy(`herafyhub/users/${publicId}`);
+        
+        // Update user document without triggering validation
+        user.profileImage = '';
+        await user.save({ validateBeforeSave: false });
+
+        res.json({
+            success: true,
+            message: "Profile image deleted successfully",
+            user
+        });
+    } catch (error) {
+        next(new APIError(error.message, error.statusCode || 500));
+    }
+});
+
+
+
 module.exports = {
     register,
     login,
@@ -208,6 +264,6 @@ module.exports = {
     deleteUser,
     forgotPassword,
     resetPassword,
-    changePassword
-
+    changePassword,
+    deleteProfileImage
 }
