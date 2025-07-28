@@ -2,6 +2,7 @@ const Task = require('./task.model');
 const APIError = require ('../../utils/errors/APIError');
 const {asyncHandler} = require('../../middlewares/errorHandler.middleware');
 const APIFeatures = require('../../utils/apiFeatures');
+const { getNotificationService } = require('../../utils/notification');
 
 
 
@@ -12,11 +13,16 @@ const createTask = asyncHandler(async (req,res,next) => {
 
     // tag populated
     await task.populate(['tags','category']);
+
+    // Schedule due date notification
+    const notificationService = getNotificationService();
+    notificationService.scheduleDueDateNotification(task);
+
     res.status(201).json({
         success: true,
         message: 'Task created successfully',
         task
-    })
+    });
 });
 
 
