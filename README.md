@@ -39,51 +39,28 @@ A powerful and modular **task management backend API** built with Node.js and Ex
 ```
 
 ├── db/                     # Database connection
-
 ├── src/
-
 │   ├── middlewares/        # Express middlewares
-
 │   │   ├── auth.middleware.js
-
 │   │   └── errorHandler.middleware.js
-
 │   ├── modules/            # Feature modules
-
 │   │   ├── Category/       # Category module
-
 │   │   ├── Tag/            # Tag module
-
 │   │   ├── Task/           # Task module
-
 │   │   └── User/           # User module
-
 │   ├── services/           # External services
-
 │   │   ├── cloudinary.service.js
-
 │   │   ├── email.service.js
-
 │   │   └── notification.service.js
-
 │   └── utils/              # Utility functions
-
 │       ├── apiFeatures.js  # API features for filtering, sorting, etc.
-
 │       ├── errors/         # Custom error handlers
-
 │       ├── multer.js       # File upload configuration
-
 │       ├── notification.js # Notification singleton
-
 │       └── validation/     # Schema validation
-
 ├── .env                    # Environment variables (not tracked in git)
-
 ├── .gitignore              # Git ignore file
-
 ├── index.js                # Application entry point
-
 └── package.json            # Project dependencies
 
 ```
