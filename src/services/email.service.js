@@ -48,7 +48,19 @@ const sendPasswordResetEmail = asyncHandler(async(userEmail, resetToken) => {
     
 });  
 
+const sendEmail = async (to, subject, text) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text
+    };
+    await transporter.sendMail(mailOptions);
+};
+
+
 module.exports = { 
     sendWelcomeEmail,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendEmail
  };

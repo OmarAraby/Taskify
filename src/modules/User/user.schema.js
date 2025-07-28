@@ -1,4 +1,3 @@
-
 const joi = require('joi');
 
 const userSchemaValidation = joi.object({

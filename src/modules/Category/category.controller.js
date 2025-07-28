@@ -5,13 +5,14 @@ const APIError = require('../../utils/errors/APIError');
 const createCategory = asyncHandler(async (req, res,next) => {
     console.log('Request body:', req.body);
     const { name, description } = req.body;
+    const createdBy = req.user.id;
         // Check if category already exists
         const existingCategory = await Category.findOne({ name });
         if (existingCategory) {
             throw new APIError('Category already exists', 400);
         }
         // Create new category
-        const category = await Category.create({ name, description });
+        const category = await Category.create({ name, description,createdBy });
         console.log('Created category:', category);
         res.status(201).json({
             success: true,
@@ -22,7 +23,7 @@ const createCategory = asyncHandler(async (req, res,next) => {
 
 // get all categories
 const getAllCategory= asyncHandler(async (req,res,next)=>{
-    const categories = await Category.find({});
+    const categories = await Category.find({createdBy: req.user.id});
     res.json({
         success: true,
         message: 'Categories retrieved successfully',

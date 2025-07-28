@@ -8,7 +8,8 @@ const {
     getTask,
     updateTask,
     deleteTask,
-    updateTaskStatus
+    updateTaskStatus,
+    getTaskStats
 } = require('./task.controller');
 
 // Protect all routes
@@ -18,6 +19,8 @@ router.use(protectionMW);
 router.route('/')
     .post(validateSchema(taskSchemaValidation), createTask)
     .get(getAllTasks);
+// Dashboard statistics route
+router.get('/stats', getTaskStats);
 
 router.route('/:id')
     .get(getTask)
@@ -25,5 +28,7 @@ router.route('/:id')
     .delete(deleteTask);
 
 router.patch('/:id/status', validateSchema(updateTaskStatusSchema), updateTaskStatus);
+
+
 
 module.exports = router;
