@@ -22,7 +22,7 @@ app.use(express.json());
 
 
 // routes
-app.use('/api/category', categoryRoutes);  // remove the comment
+app.use('/api/category', categoryRoutes);  
 app.use('/api/auth',authRoutes)
 app.use('/api/tag',tagRoutes)
 app.use('/api/task', taskRoutes)

@@ -15,6 +15,7 @@ const taskSchemaValidation = joi.object({
     description: joi.string()
         .trim()
         .min(10)
+        .max(250)
         .required()
         .messages({
             'string.min': 'Description must be at least 10 characters',
