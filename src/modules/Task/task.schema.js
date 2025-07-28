@@ -46,7 +46,7 @@ const taskSchemaValidation = joi.object({
         }),
 
     status: joi.string()
-        .valid('todo', 'in-progress', 'completed')
+        .valid('todo', 'in-progress', 'completed','overdue', 'archived')
         .default('todo')
         .messages({
             'any.only': 'Status must be either todo, in-progress, or completed'
